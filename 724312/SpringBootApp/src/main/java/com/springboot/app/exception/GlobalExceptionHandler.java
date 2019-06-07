@@ -19,8 +19,8 @@ import com.springboot.app.util.Constants;
 
 /**
  * 
- * This is the Global Exception handler class which handles all the exception generated
- * in the application
+ * This is the Global Exception handler class which handles all the exception
+ * generated in the application
  *
  */
 @ControllerAdvice
@@ -41,7 +41,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		List<String> details = new ArrayList<>();
 		details.add(ex.getMessage());
 		ErrorResponse error = new ErrorResponse(Constants.BAD_REQUEST, new Date(), details);
-		System.out.println("--------------------------------------------------------------");
 		return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
 	}
 
@@ -54,6 +53,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		ErrorResponse error = new ErrorResponse(Constants.BAD_REQUEST, new Date(), details);
 		return new ResponseEntity<>(error, status);
 
+	}
+
+	@ExceptionHandler(SubscriptionNotFoundException.class)
+	public final ResponseEntity<Object> handleSubscriptionNotFoundException(SubscriptionNotFoundException ex) {
+
+		List<String> details = new ArrayList<>();
+		details.add(ex.getMessage());
+		ErrorResponse error = new ErrorResponse(Constants.DATA_NOT_FOUND, new Date(), details);
+		return new ResponseEntity(error, HttpStatus.NOT_FOUND);
 	}
 
 }

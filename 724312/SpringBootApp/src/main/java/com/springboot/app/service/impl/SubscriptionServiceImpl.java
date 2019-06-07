@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.app.dao.SubscriptionDao;
+import com.springboot.app.exception.SubscriptionNotFoundException;
 import com.springboot.app.model.Subscription;
 import com.springboot.app.service.SubscriptionService;
+import com.springboot.app.util.Constants;
 
 /**
  * This is the service layer which holds business logic and configuration with
@@ -31,21 +33,28 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 	@Override
 	public Subscription findSubscription(int id) {
 
-		LOGGER.info("Inside SubscriptionServiceImpl getSubscription method");
+		LOGGER.info("Inside SubscriptionServiceImpl findSubscription method");
+		Subscription subsctn;
 		Optional<Subscription> subscription = subscriptionDao.findById(id);
-		return subscription.get();
+
+		if (subscription.isPresent()) {
+			subsctn = subscription.get();
+		} else {
+			throw new SubscriptionNotFoundException(Constants.SUBSCRIPTION_NOT_FOUND);
+		}
+		return subsctn;
 	}
 
 	/**
 	 * This method returns list of subscription
 	 */
-	
+
 	@Override
 	public List<Subscription> findAllSubscriptions() {
 
-		LOGGER.info("Inside SubscriptionServiceImpl getAllSubscriptions method ");
-		List<Subscription> subscription = subscriptionDao.findAll();
-		return subscription;
+		LOGGER.info("Inside SubscriptionServiceImpl findAllSubscriptions method ");
+
+		return subscriptionDao.findAll();
 	}
 
 	/**
@@ -54,9 +63,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 	@Override
 	public Subscription saveSubscription(Subscription subscriptionBean) {
 
-		LOGGER.info("Inside SubscriptionServiceImpl getAllSubscriptions method ");
-		Subscription subscrEntity = subscriptionDao.save(subscriptionBean);
-		return subscrEntity;
+		LOGGER.info("Inside SubscriptionServiceImpl saveSubscription method ");
+		return subscriptionDao.save(subscriptionBean);
 	}
 
 	/**
@@ -66,17 +74,15 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 	public Subscription updateSubscription(Subscription subscription) {
 
 		LOGGER.info("Inside SubscriptionServiceImpl updateSubscription method ");
-		Subscription existingSubscr=findSubscription(subscription.getId());
-		if(existingSubscr!=null) {
-			/** If subscription found save it*/
+		Subscription existingSubscr = findSubscription(subscription.getId());
+		if (Optional.ofNullable(existingSubscr).isPresent()) {
+			/** If subscription found save it */
 			subscription = this.saveSubscription(subscription);
-		}else {
-			/** If subscription not found return null */
-			subscription=null;
+		} else {
+			/** IF Subscription not found throw an exception */
+			throw new SubscriptionNotFoundException(Constants.SUBSCRIPTION_NOT_FOUND);
 		}
-		
 		return subscription;
 	}
-
 
 }

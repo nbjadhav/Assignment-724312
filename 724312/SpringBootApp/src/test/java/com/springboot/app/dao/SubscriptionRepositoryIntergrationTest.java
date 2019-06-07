@@ -61,7 +61,7 @@ public class SubscriptionRepositoryIntergrationTest {
 
 		Subscription subscription = subscriptionService.findSubscription(11);
 
-		assertEquals(subscription.getName(), "Narayan");
+		assertEquals("Narayan",subscription.getName());
 
 	}
 
@@ -72,7 +72,7 @@ public class SubscriptionRepositoryIntergrationTest {
 
 		Subscription subscription = subscriptionService.findSubscription(11);
 
-		assertNotEquals(subscription.getName(), "TestName");
+		assertNotEquals("TestName",subscription.getName());
 
 	}
 
@@ -96,7 +96,7 @@ public class SubscriptionRepositoryIntergrationTest {
 
 		Subscription subscptn = subscriptionService.saveSubscription(subscription);
 
-		assertNotNull(subscription);
+		assertNotNull(subscptn);
 
 	}
 
